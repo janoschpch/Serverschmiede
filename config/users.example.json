@@ -1,16 +1,8 @@
 {
     "authorizedUsers": [
-        "407531197686874112",
-        "956655492221009990"
+        
     ],
     "linkedAccounts": [
-        {
-            "userId": "407531197686874112",
-            "pterodactylUserId": 1
-        },
-        {
-            "userId": "956655492221009990",
-            "pterodactylUserId": 7
-        }
+        
     ]
 }
