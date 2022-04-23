@@ -9,7 +9,6 @@ export const client = new Client({
 });
 
 const Logger = require('./util/Logger');
-const PteroHelper = require('./util/PteroHelper');
 const AccountCreator = require('./AccountCreator');
 const ServerCreator = require('./ServerCreator');
 
