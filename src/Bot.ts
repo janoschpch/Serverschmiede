@@ -1,5 +1,7 @@
 import { Client, TextChannel, MessageEmbed, MessageActionRow, MessageButton } from "discord.js";
+
 const Modals = require('discord-modals');
+
 require('dotenv').config();
 
 export const client = new Client({
@@ -7,7 +9,7 @@ export const client = new Client({
 });
 
 const Logger = require('./util/Logger');
-const PteroServerHelper = require('./util/PteroServerHelper');
+const PteroHelper = require('./util/PteroHelper');
 const AccountCreator = require('./AccountCreator');
 const ServerCreator = require('./ServerCreator');
 

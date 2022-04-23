@@ -1,13 +1,12 @@
-import { ButtonInteraction, Interaction, MessageActionRow, MessageButton, MessageEmbed, MessageSelectMenu } from "discord.js";
+import { ButtonInteraction, Interaction, MessageActionRow, MessageButton, MessageEmbed, MessageSelectMenu, SelectMenuInteraction } from "discord.js";
 import { client } from "./Bot";
-import { eggs } from "./util/PteroServerHelper";
+import { eggs } from "./util/PteroHelper";
 
-const PteroServerHelper = require("./util/PteroServerHelper");
+const PteroServerHelper = require("./util/PteroHelper");
 
 const users = require('../config/users.json');
 
-exports.createServer = async function(interaction: ButtonInteraction) {
-
+export async function createServer(interaction: ButtonInteraction) {
     const embedMessage = new MessageEmbed()
         .setColor('#0099ff')
         .setTitle('Wähle einen Servertyp')
@@ -15,6 +14,7 @@ exports.createServer = async function(interaction: ButtonInteraction) {
         .setFooter({ text: "Serverschmiede © 2022" });
 
     var serverTypes = [];
+
     for (var i = 0; i < eggs.length; i++) {
         serverTypes.push({
             label: eggs[i].attributes.name,
@@ -34,7 +34,7 @@ exports.createServer = async function(interaction: ButtonInteraction) {
     interaction.reply({ embeds: [embedMessage], ephemeral: true, components: [row] });
 }
 
-client.on('interactionCreate', async interaction => {
+client.on('interactionCreate', async (interaction: Interaction) => {
     if (!interaction.isSelectMenu()) return;
 
     if (interaction.customId as string === 'create_server_type') {
@@ -54,16 +54,17 @@ client.on('interactionCreate', async interaction => {
         });
 
         PteroServerHelper.createServer(serverName, pterodactylUserId, eggId, (result: any) => {
+
             if (result != null) {
                 const embed = new MessageEmbed()
                     .setColor('#0099ff')
                     .setTitle('Server erstellt')
-                    .setDescription('Dein Server wurde erfolgreich erstellt! Die Serverinformationen sind:\n\nName: `' + result.attributes.name + '`\n\nDas Panel findest du unter ' + process.env.PTERODACTYL_BASE_URL)
+                    .setDescription('Dein Server wurde erfolgreich erstellt! Die Serverinformationen sind:\n\nName: `' + result.attributes.name + '`\nAddresse: `' + result.attributes.address + '`\n\nDas Panel findest du unter ' + process.env.PTERODACTYL_BASE_URL)
                     .setFooter({ text: "Serverschmiede © 2022" });
 
-                interaction.reply({ embeds: [embed], ephemeral: true });
+                interaction.update({ embeds: [embed], components: [] });
             } else {
-                interaction.reply({ content: "Es ist ein Fehler aufgetreten! Versuche es später erneut!", ephemeral: true });
+                interaction.update({ content: "Es ist ein Fehler aufgetreten! Versuche es später erneut!", components: [], embeds: [] });
             }
         });
     }

@@ -1,12 +1,15 @@
-import { ButtonInteraction, Interaction, MessageEmbed } from "discord.js";
-import axios from "axios";
+import { ButtonInteraction, MessageEmbed } from "discord.js";
 import { client } from "./Bot";
 import fs from "fs";
+
+const { Modal, TextInputComponent, showModal } = require('discord-modals');
+const validator = require('validator');
+
 require('dotenv').config();
 
 const users = require('../config/users.json');
-const { Modal, TextInputComponent, showModal } = require('discord-modals');
-const validator = require('validator');
+
+const PteroHelper = require("./util/PteroHelper");
 
 exports.createAccount = (interaction: ButtonInteraction) => {
     let modal = new Modal()
@@ -79,7 +82,7 @@ client.on("modalSubmit", async modal => {
 
         const password = Math.random().toString(36).substring(2, 10) + Math.random().toString(36).substring(2, 10);
 
-        createPterodactylAccount(email, username, firstname, lastname, password, (result: any) => {
+        PteroHelper.createAccount(email, username, firstname, lastname, password, (result: any) => {
             if (result.success) {
                 const embed = new MessageEmbed()
                     .setColor('#0099ff')
@@ -95,30 +98,6 @@ client.on("modalSubmit", async modal => {
         
     }
 });
-
-function createPterodactylAccount(email: string, username: string, fistname: string, lastname: string, password: string, callback: CallableFunction) {
-    axios.post(process.env.PTERODACTYL_BASE_URL + '/api/application/users', {
-        email: email,
-        username: username,
-        first_name: fistname,
-        last_name: lastname,
-        password: password
-    }, {
-        headers: {
-            'Authorization': 'Bearer ' + process.env.PTERODACTYL_API_KEY as string
-        }
-    }).then(function (response) {
-        if (response.status === 201) {
-            callback({ success: true, pterodactylUserId: response.data.attributes.id });
-        }
-    }).catch(function (error) {
-        if (error.response.status === 422) {
-            callback({ success: false, message: "Der Benutzername oder die E-Mail Addresse ist bereits vergeben!" });
-        } else {
-            callback({ success: false, message: "Ein Fehler ist aufgetreten. Versuche es später erneut." });
-        }
-    });
-}
 
 function linkAccount(discordUserId: string, panelUserId: number) {
     users.linkedAccounts.push({

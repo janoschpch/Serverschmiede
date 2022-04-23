@@ -31,7 +31,7 @@ function updateData() {
 
 updateData();
 
-exports.createServer = async function(name: string, user: number, egg: number, callback: CallableFunction) {
+export async function createServer(name: string, user: number, egg: number, callback: CallableFunction) {
     var eggData = getEggById(egg);
     var allocationData = getUnassignedAllocation();
     var limits = getLimitsByEggId(egg);
@@ -67,6 +67,7 @@ exports.createServer = async function(name: string, user: number, egg: number, c
     }).then(function (response) {
         Logger.info('Pterodactyl server created');
         updateData();
+        response.data.attributes.address = allocationData.attributes.alias + ':' + allocationData.attributes.port;
         callback(response.data)
     }).catch(function (error) {
         Logger.error(error);
@@ -74,7 +75,31 @@ exports.createServer = async function(name: string, user: number, egg: number, c
     });
 }
 
-function getEggById(id: number) {
+export function createAccount(email: string, username: string, fistname: string, lastname: string, password: string, callback: CallableFunction) {
+    axios.post(process.env.PTERODACTYL_BASE_URL + '/api/application/users', {
+        email: email,
+        username: username,
+        first_name: fistname,
+        last_name: lastname,
+        password: password
+    }, {
+        headers: {
+            'Authorization': 'Bearer ' + process.env.PTERODACTYL_API_KEY as string
+        }
+    }).then(function (response) {
+        if (response.status === 201) {
+            callback({ success: true, pterodactylUserId: response.data.attributes.id });
+        }
+    }).catch(function (error) {
+        if (error.response.status === 422) {
+            callback({ success: false, message: "Der Benutzername oder die E-Mail Addresse ist bereits vergeben!" });
+        } else {
+            callback({ success: false, message: "Ein Fehler ist aufgetreten. Versuche es später erneut." });
+        }
+    });
+}
+
+export function getEggById(id: number) {
     for (var i = 0; i < eggs.length; i++) {
         if (eggs[i].attributes.id == id) {
             return eggs[i];
@@ -83,7 +108,7 @@ function getEggById(id: number) {
     return null;
 }
 
-function getUnassignedAllocation() {
+export function getUnassignedAllocation() {
     for (var i = 0; i < allocations.length; i++) {
         if (allocations[i].attributes.assigned == false) {
             return allocations[i];
@@ -92,7 +117,7 @@ function getUnassignedAllocation() {
     return null;
 }
 
-function getLimitsByEggId(eggId: number) {
+export function getLimitsByEggId(eggId: number) {
     for (var i = 0; i < eggData.data.length; i++) {
         if (eggData.data[i].eggId == eggId) {
             return eggData.data[i].limits;
