@@ -1,0 +1,5 @@
+node_modules/
+config/egg_data.json
+config/users.json
+.env
+yarn.lock
