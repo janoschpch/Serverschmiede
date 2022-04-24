@@ -4,16 +4,16 @@ import fs from "fs";
 const { Modal, TextInputComponent, showModal } = require('discord-modals');
 const validator = require('validator');
 
-import { client } from "./Bot";
-
 require('dotenv').config();
+
+import { client } from "./Bot";
 
 const PteroHelper = require("./util/PteroHelper");
 const Messenger = require("./Messenger");
 
 const users = require('../config/users.json');
 
-exports.createAccount = (interaction: ButtonInteraction) => {
+export async function createAccount(interaction: ButtonInteraction) {
     let modal = new Modal()
         .setCustomId("create_account")
         .setTitle('Erstelle erst einen Account')

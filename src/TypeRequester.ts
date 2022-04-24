@@ -2,6 +2,8 @@ import { TextChannel, MessageEmbed, MessageActionRow, MessageButton, Interaction
 
 const { Modal, TextInputComponent, showModal } = require('discord-modals');
 
+require('dotenv').config();
+
 import { client } from "./Bot";
 
 const Messenger = require("./Messenger");

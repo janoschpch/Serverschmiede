@@ -1,9 +1,9 @@
 import { TextChannel, MessageEmbed, MessageActionRow, MessageButton, MessagePayload, MessageOptions } from "discord.js";
 
+require('dotenv').config();
+
 import { client } from "./Bot";
 import { eggs } from "./util/PteroHelper";
-
-require('dotenv').config();
 
 const Logger = require('./util/Logger');
 

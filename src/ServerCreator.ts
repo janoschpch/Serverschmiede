@@ -1,4 +1,6 @@
-import { ButtonInteraction, Interaction, MessageActionRow, MessageButton, MessageEmbed, MessageSelectMenu, SelectMenuInteraction } from "discord.js";
+import { ButtonInteraction, Interaction, MessageActionRow, MessageButton, MessageEmbed, MessageSelectMenu } from "discord.js";
+
+require('dotenv').config();
 
 import { client } from "./Bot";
 import { eggs } from "./util/PteroHelper";
