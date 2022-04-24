@@ -1,8 +1,10 @@
 import { ButtonInteraction, Interaction, MessageActionRow, MessageButton, MessageEmbed, MessageSelectMenu, SelectMenuInteraction } from "discord.js";
+
 import { client } from "./Bot";
 import { eggs } from "./util/PteroHelper";
 
 const PteroServerHelper = require("./util/PteroHelper");
+const Messenger = require("./Messenger");
 
 const users = require('../config/users.json');
 
@@ -63,8 +65,12 @@ client.on('interactionCreate', async (interaction: Interaction) => {
                     .setFooter({ text: "Serverschmiede © 2022" });
 
                 interaction.update({ embeds: [embed], components: [] });
+
+                Messenger.sendLogMessage(`Neuer Server wurde erstellt\n\nVon: \`${interaction.user.tag}\`\nName: \`${result.attributes.name}\`\nAddresse: \`${result.attributes.address}\``);
             } else {
                 interaction.update({ content: "Es ist ein Fehler aufgetreten! Versuche es später erneut!", components: [], embeds: [] });
+
+                Messenger.sendLogMessage(`Es ist ein Fehler aufgetreten beim erstellen eines Servers!\n\nVon: \`${interaction.user.tag}\``);
             }
         });
     }

@@ -1,15 +1,17 @@
 import { ButtonInteraction, MessageEmbed } from "discord.js";
-import { client } from "./Bot";
 import fs from "fs";
 
 const { Modal, TextInputComponent, showModal } = require('discord-modals');
 const validator = require('validator');
 
+import { client } from "./Bot";
+
 require('dotenv').config();
 
-const users = require('../config/users.json');
-
 const PteroHelper = require("./util/PteroHelper");
+const Messenger = require("./Messenger");
+
+const users = require('../config/users.json');
 
 exports.createAccount = (interaction: ButtonInteraction) => {
     let modal = new Modal()
@@ -91,6 +93,8 @@ client.on("modalSubmit", async modal => {
                     .setFooter({ text: "Serverschmiede © 2022" });
                 modal.followUp({ embeds: [embed] });
                 linkAccount(modal.user.id, result.pterodactylUserId);
+
+                Messenger.sendLogMessage("Neuer Pterodactyl Account wurde erstellt\n\nBenutzer: `" + modal.user.tag + "`\nE-Mail: `" + email + "`\nBenutzername: `" + username + "`\nVorname: `" + firstname + "`\nNachname: `" + lastname + "`\nPanel User ID: `" + result.pterodactylUserId + "`");
             } else {
                 modal.followUp({ content: result.message });
             }
@@ -104,7 +108,7 @@ function linkAccount(discordUserId: string, panelUserId: number) {
         userId: discordUserId,
         pterodactylUserId: panelUserId
     });
-    fs.writeFile('./users.json', JSON.stringify(users, null, 4), (err) => {
+    fs.writeFile('./config/users.json', JSON.stringify(users, null, 4), (err) => {
         if (err) {
             console.log(err);
         }
