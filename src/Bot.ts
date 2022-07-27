@@ -27,7 +27,7 @@ client.on('interactionCreate', async interaction => {
     if (!interaction.isButton()) return;
 
     if (interaction.customId as string === 'create_server') {
-       if (users.authorizedUsers.includes(interaction.user.id)) {
+       if (users.authorizedUsers == undefined || users.authorizedUsers.includes(interaction.user.id)) {
             var found = false;
             users.linkedAccounts.forEach((element: any) => {
                 if (element.userId === interaction.user.id) {
@@ -45,7 +45,7 @@ client.on('interactionCreate', async interaction => {
     }
 
     if (interaction.customId as string === 'request_server_type') {
-        if (users.authorizedUsers.includes(interaction.user.id)) {
+        if (users.authorizedUsers == undefined || users.authorizedUsers.includes(interaction.user.id)) {
             TypeRequester.requestServerType(interaction);
         } else {
             interaction.reply({ content: "Dein Discord Account ist nicht berechtigt Server Typen anzufragen", ephemeral: true });
